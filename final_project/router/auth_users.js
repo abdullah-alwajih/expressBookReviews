@@ -13,7 +13,7 @@ router.post("/login", (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) return res.status(404).json({message: "Error logging in"});
   if (authenticatedUser(username, password)) {
-    const accessToken = jwt.sign({ data: password }, 'access', { expiresIn: 60 * 60 });
+    const accessToken = jwt.sign({ data: password }, 'access', { expiresIn: 60 * 60 * 60});
     req.session.authorization = { accessToken, username };
     return res.status(200).send("User successfully logged in");
   } else {
@@ -23,7 +23,7 @@ router.post("/login", (req, res) => {
 
 router.put("/auth/review/:isbn", (req, res) => {
   const { isbn } = req.params;
-  const { review } = req.body;
+  const { review } = req.query;
   const { username } = req.session.authorization;
   if (!books[isbn]) return res.status(404).json({message: `ISBN ${isbn} not found`});
   books[isbn].reviews[username] = review;
